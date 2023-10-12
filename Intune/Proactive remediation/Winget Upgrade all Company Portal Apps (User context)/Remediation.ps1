@@ -1,8 +1,9 @@
-Start-Transcript -Path "C:\xxxxx\WingetUpgradeallmangedPortalApps.log" -Force -Append
+Start-Transcript -Path "C:\xxxxx\WingetUpgradeallmangedPortalApps_Usercontext.log" -Force -Append
+
+#Just to register winget if the user was not logged on before: (not allowed in local system context!)
+#Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 
 
-# resolve and navigate to winget.exe
-$Winget = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_*_x64*\winget.exe"
 
 $apps = @(
     "Mozilla.Firefox",
@@ -30,20 +31,15 @@ $apps = @(
     "Apple.iTunes",
     "WinSCP.WinSCP"
 	
-	#--------- not used right now ----------
-	#"9NRWMJP3717K", #Python
-	#"Git.Git",
-	#"Oracle.JavaRuntimeEnvironment",
-	#--------- not used right now ----------
 	
 )
 
 #Update first time the sources of the ms-store and winget
-&$Winget source update
+Winget source update
 
 foreach ($app in $apps) {
     Write-Host "---------- Updating $app if neccecary ----------"
-    &$Winget upgrade $app -h --force --accept-source-agreements --accept-package-agreements
+    Winget upgrade $app -h --force --accept-source-agreements --accept-package-agreements
     Write-Host "Exitcode for that package upgrade status:" "$LastExitCode"
 	Write-Host "---------- Updating $app finished - jumping to next one ----------"
     Write-Host "`n"
